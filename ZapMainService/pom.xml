@@ -83,6 +83,13 @@
         <artifactId>spring-cloud-starter-loadbalancer</artifactId>
     </dependency>
 
+	<dependency>
+			    <groupId>org.codehaus.jettison</groupId>
+			    <artifactId>jettison</artifactId>
+			    <version>1.5.4</version>
+				</dependency>
+				
+
 		
 	</dependencies>
 

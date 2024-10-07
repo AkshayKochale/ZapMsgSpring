@@ -16,6 +16,12 @@ public class ZapUser {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Integer Id;
 	
+	 @Column
+	 private String firstname;
+	 
+	 @Column
+	 private String lastname;
+	
 	 @Column(nullable = false, unique = true)
 	 private String username;
 
@@ -24,6 +30,14 @@ public class ZapUser {
 
 	  @Column(nullable = false)
 	  private String email;
+	  
+	  @Column
+	  private String country;
+	  
+	  @Column
+	   private String phoneno;
+	  
+	  
 
 	  
 	public Integer getId() {
@@ -56,6 +70,38 @@ public class ZapUser {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public String getFirstname() {
+		return firstname;
+	}
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getPhoneno() {
+		return phoneno;
+	}
+
+	public void setPhoneno(String phoneno) {
+		this.phoneno = phoneno;
 	}
 
 	@Override

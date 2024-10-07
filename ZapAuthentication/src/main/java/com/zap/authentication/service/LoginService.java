@@ -110,6 +110,7 @@ public class LoginService
 			
 			 
 			  obj.put("valid", tokenValidation);
+			  obj.put("username", userDetails.getUsername());
 			  
 		  }
 		  catch(Exception e) 
