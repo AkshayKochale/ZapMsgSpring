@@ -15,6 +15,10 @@ public interface ZapClientRepo extends JpaRepository<ZapClient, Integer>
 	
 	List<ZapClient> findAllByUser(ZapUser user);
 	
+	ZapClient findByClientname(String clientname);
+	
+	ZapClient findByClientnameAndUser(String clientname, ZapUser user);
+	
 	 @Query("SELECT COUNT(z) FROM ZapClient z WHERE z.user.id = ?1")
 	    Integer getTotalClientCount(Integer userId);
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zap.main.dao.ZapClient;
@@ -22,7 +23,8 @@ import com.zap.main.pojo.ZapClientPojo;
 import com.zap.main.repo.ZapClientRepo;
 import com.zap.main.repo.ZapUserRepo;
 
-@RestController("/clientService")
+@RestController
+@RequestMapping("/clientService")
 public class ZapClientService 
 {
 
@@ -36,7 +38,7 @@ public class ZapClientService
 	CommonService commonService;
 	
 	
-	@GetMapping("/getallclient")
+	@PostMapping("/getallclient")
 	public ResponseEntity<List<ZapClient>> getAllClient(@RequestBody GlobalInputPojo pojo)
 	{
 		List<ZapClient> result=new ArrayList<>();
@@ -59,7 +61,7 @@ public class ZapClientService
 	
 	
 	@PostMapping("/addclient")
-	public ResponseEntity<?> addClient(@RequestBody ZapClientPojo pojo)
+	public ResponseEntity<?> addClient(@RequestBody ZapClientPojo pojo) throws Exception
 	{
 		JSONObject result=new JSONObject();
 		try 
@@ -69,25 +71,98 @@ public class ZapClientService
 			
 			if(username!=null && !username.isEmpty())
 			{
-				ZapClient client=new ZapClient();
-				client.setClientname(pojo.getClientname());
-				client.setClientemail(pojo.getClientemail());
-				client.setCreated(new Date());
-				client.setClientphone(pojo.getClientphone());
-				client.setIsactive(true);
-				client.setUser(user);
-				client.setClienttype(pojo.getClientType());
+				String validate = validate(pojo,user);
 				
-				clientRepo.save(client);
-				result.put("output", "Sucessfully added");
+				if(!validate.equals("successful"))
+				{
+					result.put("status", "failed");
+					result.put("output", validate);
+				}else 
+				{
+					ZapClient client=new ZapClient();
+					client.setClientname(pojo.getClientname());
+					client.setClientemail(pojo.getClientemail());
+					client.setCreated(new Date());
+					client.setClientphone(pojo.getClientphone());
+					client.setIsactive(true);
+					client.setUser(user);
+					client.setClienttype(pojo.getClienttype());
+					
+					clientRepo.save(client);
+					result.put("status", "success");
+					result.put("output", "Sucessfully added");
+				}
 				
+				
+				
+			}
+			else {
+				result.put("status", "failed");
+				result.put("output", "Please login");
 			}
 		}
 		catch(Exception e) 
 		{
 			e.printStackTrace();
+			result.put("status", "failed");
+			result.put("output", e.getMessage());
 		}
-		return ResponseEntity.ok(result);
+		return ResponseEntity.ok(result.toString());
+	}
+	
+	@PostMapping("/multiclientadd")
+	public ResponseEntity<?> addMultipleClient(@RequestBody GlobalInputPojo pojo) throws Exception
+	{
+		JSONObject result=new JSONObject();
+		try 
+		{
+			String username = commonService.fetchUsernameAndValidateToken(pojo.getToken());
+			ZapUser user = repo.findByUsername(username);
+			
+			if(username!=null && !username.isEmpty())
+			{
+				List<ZapClientPojo> clientpojoList = pojo.getClientpojo();
+				
+				for(ZapClientPojo ZapClientPojo :clientpojoList) 
+				{
+					String validate = validate(ZapClientPojo,user);
+					
+					if(!validate.equals("successful"))
+					{
+						
+					}else 
+					{
+						ZapClient client=new ZapClient();
+						client.setClientname(ZapClientPojo.getClientname());
+						client.setClientemail(ZapClientPojo.getClientemail());
+						client.setCreated(new Date());
+						client.setClientphone(ZapClientPojo.getClientphone());
+						client.setIsactive(true);
+						client.setUser(user);
+						client.setClienttype(ZapClientPojo.getClienttype());
+						
+						clientRepo.save(client);
+						result.put("status", "success");
+						result.put("output", "Sucessfully added");
+					}
+				}
+				
+				
+				
+				
+			}
+			else {
+				result.put("status", "failed");
+				result.put("output", "Please login");
+			}
+		}
+		catch(Exception e) 
+		{
+			e.printStackTrace();
+			result.put("status", "failed");
+			result.put("output", e.getMessage());
+		}
+		return ResponseEntity.ok(result.toString());
 	}
 	
 	@PostMapping("/updateclient")
@@ -106,16 +181,25 @@ public class ZapClientService
 					result.put("output", "Invalid client");
 				}else 
 				{
-					client.setClientname(pojo.getClientname());
-					client.setClientemail(pojo.getClientemail());
-					client.setCreated(new Date());
-					client.setClientphone(pojo.getClientphone());
-					client.setIsactive(true);
-					client.setUser(user);
-					client.setClienttype(pojo.getClientType());
+					String validate = validate(pojo,user);
 					
-					clientRepo.save(client);
-					result.put("output", "Sucessfully updated");
+					if(!validate.equals("successful"))
+					{
+						result.put("status", "failed");
+						result.put("output", validate);
+					}else 
+					{
+						client.setClientname(pojo.getClientname());
+						client.setClientemail(pojo.getClientemail());
+						client.setCreated(new Date());
+						client.setClientphone(pojo.getClientphone());
+						client.setIsactive(true);
+						client.setUser(user);
+						client.setClienttype(pojo.getClienttype());
+						
+						clientRepo.save(client);
+						result.put("output", "Sucessfully updated");
+					}
 				}
 				
 			
@@ -183,9 +267,10 @@ public class ZapClientService
 		return ResponseEntity.ok(result);
 	}
 	
-	@GetMapping("/toggleactive/{clientid}")
-	public void toggelActiveStatus(@PathVariable Integer clientid) 
+	@GetMapping("/toggleactive/{clientid}") 
+	public ResponseEntity<?> toggelActiveStatus(@PathVariable Integer clientid) throws Exception  
 	{
+		JSONObject result=new JSONObject();
 		ZapClient client=null;
 		try 
 		{
@@ -196,13 +281,48 @@ public class ZapClientService
 				client = clientOptional.get();
 				client.setIsactive(!client.isIsactive());
 				clientRepo.save(client);
+				result.put("status", "success");
+				result.put("output", "Changed Sucessfully");
+			}
+			else
+			{
+				result.put("status", "failed");
+				result.put("output", "Invalid Client");
 			}
 		}
 		catch(Exception e) 
 		{
+			
 			e.printStackTrace();
+			result.put("status", "failed");
+			result.put("output", e.getMessage());
 		}
+		return ResponseEntity.ok(result.toString());
 	}
+	
+	public String validate(ZapClientPojo client,ZapUser user) {
+	    if (client.getClientname() == null || client.getClientname().trim().isEmpty()) {
+	        return "Invalid Client Name";
+	    }
+	    if (client.getClientemail() == null || client.getClientemail().trim().isEmpty()) {
+	        return "Invalid Client Email";
+	    }
+	    if (client.getClientphone() == null || client.getClientphone().trim().isEmpty()) {
+	        return "Invalid Client Phone";
+	    }
+	    if (!client.getClienttype().equals("Bot") && !client.getClienttype().equals("Real")) {
+	        return "Invalid Client Type";
+	    }
+
+	    ZapClient existingClient = clientRepo.findByClientnameAndUser(client.getClientname(),user);
+	    if (existingClient != null) {
+	        return "Client with this name already exists";
+	    }
+
+	    return "successful"; // or return true if you prefer a boolean response
+	}
+
+
 	
 	
 }

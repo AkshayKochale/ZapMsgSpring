@@ -24,7 +24,7 @@ public class ZapClientPojo {
 	
 	private String token;
 	
-	private String clientType;
+	private String clienttype;
 	
 
 	public String getToken() {
@@ -101,19 +101,21 @@ public class ZapClientPojo {
 		this.isactive = isactive;
 	}
 
-	public String getClientType() {
-		return clientType;
+	
+
+	public String getClienttype() {
+		return clienttype;
 	}
 
-	public void setClientType(String clientType) {
-		this.clientType = clientType;
+	public void setClienttype(String clienttype) {
+		this.clienttype = clienttype;
 	}
 
 	@Override
 	public String toString() {
 		return "ZapClientPojo [clientid=" + clientid + ", user=" + user + ", created=" + created + ", clientname="
 				+ clientname + ", clientemail=" + clientemail + ", clientphone=" + clientphone + ", platformtoken="
-				+ platformtoken + ", isactive=" + isactive + ", token=" + token + ", clientType=" + clientType + "]";
+				+ platformtoken + ", isactive=" + isactive + ", token=" + token + ", clientType=" + clienttype + "]";
 	}
 
 	

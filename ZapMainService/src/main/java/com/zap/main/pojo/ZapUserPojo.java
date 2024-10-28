@@ -10,7 +10,7 @@ public class ZapUserPojo
 	String password;
 	String confirmpassword;
 	String country;
-	String phoneno;
+	String phone;
 	
 	public String getFirstname() {
 		return firstname;
@@ -54,17 +54,20 @@ public class ZapUserPojo
 	public void setCountry(String country) {
 		this.country = country;
 	}
-	public String getPhoneno() {
-		return phoneno;
+	
+	
+	
+	public String getPhone() {
+		return phone;
 	}
-	public void setPhoneno(String phoneno) {
-		this.phoneno = phoneno;
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 	@Override
 	public String toString() {
 		return "ZapUserPojo [firstname=" + firstname + ", lastname=" + lastname + ", username=" + username + ", email="
 				+ email + ", password=" + password + ", confirmpassword=" + confirmpassword + ", country=" + country
-				+ ", phoneno=" + phoneno + "]";
+				+ ", phoneno=" + phone + "]";
 	}
 	
 	

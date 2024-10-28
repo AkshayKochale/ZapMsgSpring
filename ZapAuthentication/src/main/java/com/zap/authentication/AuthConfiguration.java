@@ -41,7 +41,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter
 		  http
 		  .csrf().disable()
 		  .cors().and()
-		  .authorizeRequests().antMatchers("/public/**","/login/**","/oauth2/**").permitAll()
+		  .authorizeRequests().antMatchers("/public/**","/login/**","/oauth2/**","/registration/**").permitAll()
 		  .anyRequest().authenticated()
 		  .and().httpBasic()
 		  .and().oauth2Login().loginPage("/") .successHandler(filter).failureUrl("/login?error=true") 

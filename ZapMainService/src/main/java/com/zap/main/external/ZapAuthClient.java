@@ -10,6 +10,6 @@ public interface ZapAuthClient {
 
 	
 	@PostMapping("/login/validate")
-	public ResponseEntity<?> getAutheticationStatus(@RequestBody String token);
+	public ResponseEntity<String> getAutheticationStatus(@RequestBody String token);
 	
 }

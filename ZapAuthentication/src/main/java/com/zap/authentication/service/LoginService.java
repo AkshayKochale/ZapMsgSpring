@@ -38,19 +38,33 @@ public class LoginService
 	    private OAuth2Service oauth2Service;
 	
 	    @PostMapping("/login")
-	    public ResponseEntity<?> loginService(@RequestBody LoginReqPojo pojo) {
+	    public ResponseEntity<?> loginService(@RequestBody LoginReqPojo pojo)  throws Exception
+	    {
+	    	JSONObject result=new JSONObject();
 	        try {
-	            authenticationManager.authenticate(
+	        	authenticationManager.authenticate(
 	                new UsernamePasswordAuthenticationToken(pojo.getUsername(), pojo.getPassword())
 	            );
-	        } catch (Exception e) {
-	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+	            
+	            final UserDetails userDetails = userDetailsService.loadUserByUsername(pojo.getUsername());
+		        final String jwt = jwtUtil.generateToken(userDetails.getUsername());
+
+		        	
+		        	result.put("status", "success");
+		        	result.put("token", jwt);
+		        	
+	        } catch (Exception e) 
+	        {
+	        		e.printStackTrace();
+	        		String message = "Invalid Username/Password";
+	        		result.put("status", "failed");
+		        	result.put("msg",message );
+	        		
 	        }
 
-	        final UserDetails userDetails = userDetailsService.loadUserByUsername(pojo.getUsername());
-	        final String jwt = jwtUtil.generateToken(userDetails.getUsername());
-
-	        return ResponseEntity.ok(jwt);
+	        
+	        
+	        return ResponseEntity.ok(result.toString());
 	    }
 
 		
@@ -95,7 +109,7 @@ public class LoginService
 	  }
 	 
 	  @PostMapping("/login/validate")
-	  public ResponseEntity<?> validateExternalToken(@RequestBody String token) throws Exception
+	  public ResponseEntity<String> validateExternalToken(@RequestBody String token) throws Exception
 	  {
 		  JSONObject obj=new JSONObject();
 		  try 
@@ -118,7 +132,7 @@ public class LoginService
 			  obj.put("valid", "Error");
 		  }
 		  
-		  return ResponseEntity.ok(obj);
+		  return ResponseEntity.ok(obj.toString());
 		  
 	  }
 			

@@ -4,7 +4,9 @@ import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zap.main.dao.ZapSubscription;
@@ -14,7 +16,8 @@ import com.zap.main.repo.ZapClientRepo;
 import com.zap.main.repo.ZapSubscriptionRepo;
 import com.zap.main.repo.ZapUserRepo;
 
-@RestController("/bashboard")
+@RestController
+@RequestMapping("/dashboard")
 public class DashboradService
 {
 	
@@ -30,7 +33,7 @@ public class DashboradService
 	@Autowired
 	ZapClientRepo clientRepo;
 	
-	@GetMapping("/data")
+	@PostMapping("/data")
 	public ResponseEntity<?> getData(@RequestBody GlobalInputPojo pojo) 
 	{	
 		JSONObject result=new JSONObject();
@@ -47,10 +50,10 @@ public class DashboradService
 				Integer totalClientCount = clientRepo.getTotalClientCount(user.getId());
 				
 				result.put("username", user.getUsername());
-				result.put("sub-enddate", subscription.getSubscription_end_Date());
-				result.put("credits-used", subscription.getCredits_used());
-				result.put("credits-total", subscription.getCredits_avaliable());
-				result.put("totalclientcount", totalClientCount==null?0:totalClientCount);
+//				result.put("sub-enddate", subscription.getSubscription_end_Date());
+//				result.put("credits-used", subscription.getCredits_used());
+//				result.put("credits-total", subscription.getCredits_avaliable());
+//				result.put("totalclientcount", totalClientCount==null?0:totalClientCount);
 			}
 		}
 		catch(Exception e) 
@@ -58,7 +61,7 @@ public class DashboradService
 			e.printStackTrace();
 		}
 		
-		return ResponseEntity.ok(result);
+		return ResponseEntity.ok(result.toString());
 	}
 	
 	

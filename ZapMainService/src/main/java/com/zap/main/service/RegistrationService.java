@@ -5,37 +5,50 @@ import java.util.regex.Pattern;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zap.main.dao.ZapUser;
 import com.zap.main.pojo.ZapUserPojo;
 import com.zap.main.repo.ZapUserRepo;
 
-@RestController("/registration")
+@RestController
+@RequestMapping("/registration")
 public class RegistrationService
 {
 		@Autowired
 		ZapUserRepo repo;
 	
+		final static String specialChars = "!\"#$%&'()*+,-./:;<=>?[\\]^`{|}~@_";
+		
 	 @GetMapping("/validate_username/{username}")
 	 public ResponseEntity<?> validateUsername(@PathVariable String username) 
 	 {
 		 JSONObject result= new JSONObject();
 		 try 
 		 {
-			 ZapUser findByUsername = repo.findByUsername(username);
-			 if(findByUsername!=null)
+			 if(username!=null && containsSpecialCharacter(username,specialChars))
 			 {
-				 result.put("validate", "Username is already taken");
+				 result.put("validate", "Username cannot have special character");
 			 }
 			 else 
 			 {
-				 result.put("validate", "");
+				 ZapUser findByUsername = repo.findByUsername(username);
+				 if(findByUsername!=null)
+				 {
+					 result.put("validate", "Username is already taken");
+				 }
+				 else 
+				 {
+					 result.put("validate", "");
+				 }
 			 }
+			
 		 }
 		 catch(Exception e) 
 		 {
@@ -43,8 +56,18 @@ public class RegistrationService
 		 }
 		 
 		 
-		 return ResponseEntity.ok(result);
+		 return ResponseEntity.ok(result.toString());
 	 }
+	 
+	 public static boolean containsSpecialCharacter(String input, String specialCharacters) {
+		 
+		 	for(int i=0;i<input.length();i++)
+		 	{
+		 		if(specialCharacters.contains(input.charAt(i)+""))return true;
+		 	}
+		 
+		 	return false;
+	    }
 	 
 	 @GetMapping("/validate_password_strength/{password}")
 	 public ResponseEntity<?> validatePasswordStrength(@PathVariable String password) 
@@ -55,7 +78,7 @@ public class RegistrationService
 			boolean oneUpper=false;
 			boolean oneSpecialChar=false;
 			boolean oneDigit=false;
-			String specialChars = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+			
 			
 			if(password.length()<8)
 			{
@@ -91,7 +114,7 @@ public class RegistrationService
 		 }
 		 
 		 
-		 return ResponseEntity.ok(result);
+		 return ResponseEntity.ok(result.toString());
 	 }
 	
 	 @PostMapping("/register")
@@ -101,6 +124,7 @@ public class RegistrationService
 		 
 		 try 
 		 {
+			 System.out.println("registration called.....");
 			 String validateForm = validateForm(pojo);
 			 
 			 if(validateForm.isEmpty())
@@ -119,7 +143,7 @@ public class RegistrationService
 			 e.printStackTrace();
 		 }
 		 
-		 return ResponseEntity.ok(result);
+		 return ResponseEntity.ok(result.toString());
 	 }
 	 
 	 @PostMapping("/register_update")
@@ -204,10 +228,10 @@ public class RegistrationService
 		 user.setFirstname(pojo.getFirstname());
 		 user.setLastname(pojo.getLastname());
 		 user.setUsername(pojo.getUsername());
-		 user.setPassword(pojo.getPassword());
+		 user.setPassword(new BCryptPasswordEncoder().encode(pojo.getPassword()));
 		 user.setEmail(pojo.getEmail());
 		 user.setCountry(pojo.getCountry());
-		 user.setPhoneno(pojo.getPhoneno());
+		 user.setPhoneno(pojo.getPhone());
 		 
 		 return user;
 	 }
@@ -217,6 +241,8 @@ public class RegistrationService
 		 String msg="";
 		 String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
                  						"(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+		 
+		 System.out.println(pojo);
 		 Pattern emailPattern = Pattern.compile(emailRegex);
 		 
 		 String phoneRegex = "^[0-9]{10}$";
@@ -232,13 +258,13 @@ public class RegistrationService
 			 msg="Email cannot be Empty";
 		 else if(pojo.getCountry()==null)
 			 msg="Country cannot be Empty";
-		 else if(pojo.getPhoneno()==null)
+		 else if(pojo.getPhone()==null)
 			 msg="Phone Number cannot be Empty";
 		 else if(pojo.getPassword()==null)
 			 msg="Password cannot be Empty";
 		 else if(!emailPattern.matcher(pojo.getEmail()).matches())
 			 msg="Invalid Email";
-		 else if(!phonePattern.matcher(pojo.getPhoneno()).matches())
+		 else if(!phonePattern.matcher(pojo.getPhone()).matches())
 			 msg="Invalid Phone Number";
 		 
 		

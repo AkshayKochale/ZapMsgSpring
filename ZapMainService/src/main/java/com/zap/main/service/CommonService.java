@@ -1,5 +1,7 @@
 package com.zap.main.service;
 
+import java.util.LinkedHashMap;
+
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +26,15 @@ public class CommonService
 	{
 		if(token==null || token.isEmpty())return "";
 		
-		ResponseEntity<?> reponse = zapAuthClient.getAutheticationStatus(token);
+		ResponseEntity<String> response = zapAuthClient.getAutheticationStatus(token);
 		
-		JSONObject result = (JSONObject)reponse.getBody();
+		String jsonStr=null;
+		if(response==null || !response.getStatusCode().is2xxSuccessful())
+			jsonStr="";
+		else
+			jsonStr=response.getBody();
+			
+		JSONObject result = new JSONObject(jsonStr);
 		
 		if(result.has("valid"))
 		{

@@ -1,79 +1,76 @@
 package com.zap.main.dao;
 
 import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class History 
-{
+public class History {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
-	@OneToMany
-	private ZapUser user;
-	
-	@OneToMany
-	private ZapClient client;
-	
-	@Temporal(value = TemporalType.DATE)
-	private Date senddate;
-	
-	private String messagetype;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-	public Integer getId() {
-		return id;
-	}
+    @ManyToOne
+    private ZapUser user;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    @ManyToOne
+    private ZapClient client;
 
-	public ZapUser getUser() {
-		return user;
-	}
+    @Temporal(TemporalType.DATE)
+    private Date senddate;
 
-	public void setUser(ZapUser user) {
-		this.user = user;
-	}
+    private String messagetype;
 
-	public ZapClient getClient() {
-		return client;
-	}
+    // Getters and Setters
+    public Integer getId() {
+        return id;
+    }
 
-	public void setClient(ZapClient client) {
-		this.client = client;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Date getSenddate() {
-		return senddate;
-	}
+    public ZapUser getUser() {
+        return user;
+    }
 
-	public void setSenddate(Date senddate) {
-		this.senddate = senddate;
-	}
+    public void setUser(ZapUser user) {
+        this.user = user;
+    }
 
-	public String getMessagetype() {
-		return messagetype;
-	}
+    public ZapClient getClient() {
+        return client;
+    }
 
-	public void setMessagetype(String messagetype) {
-		this.messagetype = messagetype;
-	}
+    public void setClient(ZapClient client) {
+        this.client = client;
+    }
 
-	@Override
-	public String toString() {
-		return "History [id=" + id + ", user=" + user + ", client=" + client + ", senddate=" + senddate
-				+ ", messagetype=" + messagetype + "]";
-	}
-	
-	
+    public Date getSenddate() {
+        return senddate;
+    }
+
+    public void setSenddate(Date senddate) {
+        this.senddate = senddate;
+    }
+
+    public String getMessagetype() {
+        return messagetype;
+    }
+
+    public void setMessagetype(String messagetype) {
+        this.messagetype = messagetype;
+    }
+
+    @Override
+    public String toString() {
+        return "History [id=" + id + ", user=" + user + ", client=" + client + ", senddate=" + senddate
+                + ", messagetype=" + messagetype + "]";
+    }
 }
