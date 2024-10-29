@@ -9,9 +9,15 @@ public class GlobalInputPojo
 	String username;
 	Integer clientid;
 	List<ZapClientPojo> clientpojo;
+	String date;
 	
 	
-	
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
 	public String getToken() {
 		return token;
 	}

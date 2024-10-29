@@ -26,6 +26,8 @@ public class History {
     private Date senddate;
 
     private String messagetype;
+    
+    private String message;
 
     // Getters and Setters
     public Integer getId() {
