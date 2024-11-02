@@ -70,9 +70,19 @@ public class History {
         this.messagetype = messagetype;
     }
 
-    @Override
-    public String toString() {
-        return "History [id=" + id + ", user=" + user + ", client=" + client + ", senddate=" + senddate
-                + ", messagetype=" + messagetype + "]";
-    }
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	@Override
+	public String toString() {
+		return "History [id=" + id + ", user=" + user + ", client=" + client + ", senddate=" + senddate
+				+ ", messagetype=" + messagetype + ", message=" + message + "]";
+	}
+
+    
 }

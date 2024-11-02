@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zap.main.dao.ZapUser;
+import com.zap.main.pojo.GlobalInputPojo;
 import com.zap.main.pojo.ZapUserPojo;
 import com.zap.main.repo.ZapUserRepo;
 
@@ -23,6 +24,9 @@ public class RegistrationService
 {
 		@Autowired
 		ZapUserRepo repo;
+		
+		@Autowired
+		CommonService commonService;
 	
 		final static String specialChars = "!\"#$%&'()*+,-./:;<=>?[\\]^`{|}~@_";
 		
@@ -161,12 +165,14 @@ public class RegistrationService
 				 
 				 if(prevObj==null) 
 				 {
+					 result.put("status", "failed");
 					 result.put("output", "Invalid User");
 				 }
 				 else 
 				 {	
 					 ZapUser user = getObjectFromPojo(pojo,prevObj);
 					 repo.save(user);
+					 result.put("status", "success");
 					 result.put("output", "Sucessfully Updated");
 				 }
 			 }
@@ -180,7 +186,7 @@ public class RegistrationService
 			 e.printStackTrace();
 		 }
 		 
-		 return ResponseEntity.ok(result);
+		 return ResponseEntity.ok(result.toString());
 	 }
 	 
 	 @GetMapping("/profile_updation_req/{username}")
@@ -217,6 +223,48 @@ public class RegistrationService
 		 
 		 return ResponseEntity.ok(result);
 	 }
+	 
+	 @PostMapping("/getprofileforedit")
+	 public ResponseEntity<?> getProfileForEdit(@RequestBody GlobalInputPojo pojo) throws Exception  
+	 {
+		 JSONObject result= new JSONObject();
+		 
+		 try 
+		 {
+			 String username = commonService.fetchUsernameAndValidateToken(pojo.getToken());
+			 ZapUser user = repo.findByUsername(username);
+			 
+			 if(user==null)
+			 {
+				 result.put("status", "failed");
+				 result.put("output", "Invalid User");
+			 }
+			 else 
+			 {
+				 result.put("status", "success");
+				 result.put("firstname", user.getFirstname());
+				 result.put("lastname", user.getLastname());
+				 result.put("username", user.getUsername());
+				 result.put("email", user.getEmail());
+				 result.put("password", "");
+				 result.put("confirm-password", "");
+				 result.put("country", user.getCountry());
+				 result.put("phone", user.getPhoneno());
+				 
+				 
+			 }	
+		 }
+		 catch(Exception e) 
+		 {
+			 e.printStackTrace();
+			 result.put("status", "failed");
+			 result.put("output", e.getMessage());
+		 }
+		 
+		 return ResponseEntity.ok(result.toString());
+	 }
+	 
+	 
 	 
 	 public ZapUser getObjectFromPojo(ZapUserPojo pojo,ZapUser prevUserObject) 
 	 {
@@ -270,6 +318,9 @@ public class RegistrationService
 		
 		 return msg;
 	 }
+	 
+	 
+	 
 	
 	 
 	

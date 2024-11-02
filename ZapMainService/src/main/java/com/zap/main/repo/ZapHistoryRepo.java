@@ -15,10 +15,10 @@ import com.zap.main.dao.ZapUser;
 public interface ZapHistoryRepo extends JpaRepository<History, Integer> 
 {
 	
-	List<History> findAllByClient(List<ZapClient> client);
 	
 	List<History> findAllByUser(ZapUser user);
 	
     List<History> findAllByUserAndSenddateGreaterThanEqual(ZapUser user, Date date);
 	
+    List<History> findAllByUserAndMessagetype(ZapUser user, String type);
 }

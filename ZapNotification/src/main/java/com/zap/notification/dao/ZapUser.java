@@ -1,4 +1,4 @@
-package com.zap.main.dao;
+package com.zap.notification.dao;
 
 import java.util.Date;
 

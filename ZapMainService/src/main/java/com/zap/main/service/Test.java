@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zap.main.external.ZapAuthClient;
+import com.zap.main.util.ZapKafkaUtil;
 
 @RestController
 public class Test 
@@ -14,9 +15,14 @@ public class Test
 	@Autowired
 	ZapAuthClient zapAuthCLient;
 	
+	@Autowired
+	ZapKafkaUtil k;
+	
 	@RequestMapping("/test")
 	public String test()
 	{
+		
+		k.sendToKafka();
 		return "It's Working....";
 	}
 	

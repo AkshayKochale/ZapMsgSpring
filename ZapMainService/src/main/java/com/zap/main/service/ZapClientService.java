@@ -146,10 +146,6 @@ public class ZapClientService
 						result.put("output", "Sucessfully added");
 					}
 				}
-				
-				
-				
-				
 			}
 			else {
 				result.put("status", "failed");
@@ -319,7 +315,7 @@ public class ZapClientService
 	        return "Client with this name already exists";
 	    }
 
-	    return "successful"; // or return true if you prefer a boolean response
+	    return "successful"; 
 	}
 
 
