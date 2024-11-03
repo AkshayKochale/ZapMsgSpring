@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zap.notification.pojo.MessagePojo;
 import com.zap.notification.repo.ZapClientRepo;
+import com.zap.notification.service.EmailSender;
 import com.zap.notification.service.NotificationController;
 
 @Component
@@ -32,9 +33,12 @@ public class ZapKafkaConsumer
 		{
 			ObjectMapper objM=new ObjectMapper();
 			MessagePojo messagePojo = objM.readValue(data, MessagePojo.class);
-//			System.out.println(data);
-			notificationController.broadcastMessage(data);
-		
+			System.out.println(messagePojo);
+			
+			if(messagePojo.getMsgType().equals("notification"))
+			 notificationController.sendMessageToUser(messagePojo.getClientname(), data);
+			else
+				new EmailSender().sendEmail(messagePojo,messagePojo.getEmail(),messagePojo.getPath(),messagePojo.getClientemail());
 			
 		}
 		catch(Exception e)

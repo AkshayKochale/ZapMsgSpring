@@ -4,34 +4,29 @@ package com.zap.notification.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.zap.notification.MyWebSocketHandler;
 
 @Controller
 public class NotificationController {
 
-    private final MyWebSocketHandler myWebSocketHandler;
+	private final MyWebSocketHandler webSocketHandler;
 
     @Autowired
-    public NotificationController(MyWebSocketHandler myWebSocketHandler) {
-        this.myWebSocketHandler = myWebSocketHandler;
+    public NotificationController(MyWebSocketHandler webSocketHandler) {
+        this.webSocketHandler = webSocketHandler;
     }
 
-    @GetMapping("/test/send")
-    public ResponseEntity<String> testSendMessage() {
+    @PostMapping("/send")
+    public ResponseEntity<String> sendMessageToUser(@RequestParam String userId, @RequestParam String message) {
         try {
-            myWebSocketHandler.broadcastMessage("This is from api");
-            return ResponseEntity.ok("Message sent");
+            webSocketHandler.sendMessageToUser(userId, message);
+            return ResponseEntity.ok("Message sent to user: " + userId);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Failed to send message");
+            return ResponseEntity.status(500).body("Error sending message: " + e.getMessage());
         }
-    }
-    
-    public void broadcastMessage(String msg) throws Exception 
-    {
-    	myWebSocketHandler.broadcastMessage(msg);
     }
 }
 

@@ -22,7 +22,7 @@ public class Test
 	public String test()
 	{
 		
-		k.sendToKafka();
+		k.sendToKafka("some random data");
 		return "It's Working....";
 	}
 	

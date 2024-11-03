@@ -10,7 +10,11 @@ public class MessagePojo {
 	String msgType;
 	String priority;
 	Integer clientid;
+	String clientname;
 	Date senddatetime;
+	String path;
+	String clientemail;
+	String email;
 	
 	public String getMsgtitle() {
 		return msgtitle;
@@ -48,13 +52,36 @@ public class MessagePojo {
 	public void setMsgType(String msgType) {
 		this.msgType = msgType;
 	}
+	public String getClientname() {
+		return clientname;
+	}
+	public void setClientname(String clientname) {
+		this.clientname = clientname;
+	}
+	public String getPath() {
+		return path;
+	}
+	public void setPath(String path) {
+		this.path = path;
+	}
+	public String getClientemail() {
+		return clientemail;
+	}
+	public void setClientemail(String clientemail) {
+		this.clientemail = clientemail;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 	@Override
 	public String toString() {
 		return "MessagePojo [msgtitle=" + msgtitle + ", msgcontent=" + msgcontent + ", msgType=" + msgType
-				+ ", priority=" + priority + ", clientid=" + clientid + ", senddatetime=" + senddatetime + "]";
+				+ ", priority=" + priority + ", clientid=" + clientid + ", clientname=" + clientname + ", senddatetime="
+				+ senddatetime + ", path=" + path + ", clientemail=" + clientemail + ", email=" + email + "]";
 	}
-	
-	
 	
 	
 	

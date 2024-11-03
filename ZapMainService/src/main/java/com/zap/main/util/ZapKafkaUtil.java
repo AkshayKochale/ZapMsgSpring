@@ -15,9 +15,9 @@ public class ZapKafkaUtil {
     KafkaTemplate<String, String> template;
     
     
-    public void sendToKafka() 
+    public void sendToKafka(String data) 
     {
-    	template.send(topicName, "This Is Goku!!!");
+    	template.send(topicName, data);
     }
     
     
